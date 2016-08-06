@@ -1,44 +1,57 @@
 function validator(str) {
 	var messages 	= str.replace(/\s+/g, ' ').split(' ');
-	var valid_lower = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'];
-	var valid_upper = ['Z', 'M', 'K', 'P', 'Q'];
 
 	for (var i = 0; i < messages.length; i++) {
 		validate(messages[i]);
 	}
 
 	function validate(message) {
-		// Pass #1: check all characters valid
-		var filtered = message;
+		// E : [MPKQ]EE | ZE | [abcdefghij]
+		var cursor = 0,
+			savedCursor = 0;
 
-		for (var i = message.length - 1; i > 0; i--) {
-			if (valid_lower.indexOf(message[i]) < 0 && valid_upper.indexOf(message[i]) < 0) {
-				console.log(message, 'INVALID');
-				return false;
-			}
+
+		function E() {
+			return (saveCursor(), E1()) || (backtrack(), saveCursor(), E2()) || (backtrack(), saveCursor(), E3());
 		}
 
-		// Pass #2: set all approved lower case
-		// values as marker value 'v'
-		filtered = filtered.replace(/[a-j]/g, 'v');
+		// [MPKQ]EE
+		function E1() {
+			var nextToken = getNextToken();
 
-		// Pass #3: set Zx pairs as a valid message 'v'
-		filtered = filtered.replace(/Zv/g, 'v');
 
-		if (filtered.match(/Z/g)) {
-			console.log(message, 'INVALID');
-			return false;
+			return (/[MKPQ]/.test(nextToken) && E() && E());
 		}
 
-		// Pass #4: set M|K|P|Qvv as valid message, 'v'
-		filtered = filtered.replace(/[MKPQ]vv/g, 'v');
+		// ZE
+		function E2() {
+			var nextToken = getNextToken();
 
-		if (filtered.match(/[MKPQ]/g)) {
-			console.log(message, 'INVALID');
-			return false;
+			return (/Z/.test(nextToken) && E());
 		}
 
-		console.log(message, 'VALID');
+		// [a-j]
+		function E3() {
+			var nextToken = getNextToken();
+
+			return (/[a-j]/.test(nextToken));
+		}
+
+		function saveCursor() {
+			savedCursor = cursor;
+		}
+
+		function backtrack() {
+			cursor = savedCursor;
+		}
+
+		function getNextToken() {
+			var nextToken = message[cursor];
+			cursor++;
+			return nextToken;
+		}
+
+		console.log(message, ((E() && cursor == message.length) ? 'VALID' : 'INVALID'))
 
 	}
 }
