@@ -17,24 +17,17 @@ function validator(str) {
 
 		// [MPKQ]EE
 		function E1() {
-			var nextToken = getNextToken();
-
-
-			return (/[MKPQ]/.test(nextToken) && E() && E());
+			return (/[MKPQ]/.test(getNextToken()) && E() && E());
 		}
 
 		// ZE
 		function E2() {
-			var nextToken = getNextToken();
-
-			return (/Z/.test(nextToken) && E());
+			return (/Z/.test(getNextToken()) && E());
 		}
 
 		// [a-j]
 		function E3() {
-			var nextToken = getNextToken();
-
-			return (/[a-j]/.test(nextToken));
+			return (/[a-j]/.test(getNextToken()));
 		}
 
 		function saveCursor() {
